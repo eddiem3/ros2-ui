@@ -6,6 +6,10 @@ This project provides a modern, interactive web dashboard to visualize ROS 2 dat
 
 Watch the dashboard in action:
 
+![Screenshot 1](sc1.png)
+
+![Screenshot 2](sc2.png)
+
 Demo:
 
 demo.mp4
