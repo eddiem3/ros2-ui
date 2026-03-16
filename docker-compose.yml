@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  ros_app:
+    build: .
+    volumes:
+      - .:/ros2_ws
+      - ./2011_09_26:/dataset:ro
+    ports:
+      - "5000:5000"
+    command: >
+      bash -c "source /opt/ros/humble/setup.bash &&
+               colcon build &&
+               source install/setup.bash &&
+               ros2 launch ros2_flask_ui main.launch.py"
+    environment:
+      - PYTHONUNBUFFERED=1

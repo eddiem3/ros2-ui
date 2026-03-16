@@ -1,0 +1,7 @@
+torch
+torchvision
+Flask
+Flask-SocketIO
+eventlet
+opencv-python-headless
+numpy<2.0.0

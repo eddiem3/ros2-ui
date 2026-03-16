@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROS2 Semantic Segmentation Dashboard</title>
+    
+    <!-- GridStack CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/gridstack@7.2.3/dist/gridstack.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/gridstack@7.2.3/dist/gridstack-extra.min.css" rel="stylesheet"/>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation / Control Panel -->
+        <nav class="sidebar">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <h2>ROS2 UI</h2>
+            </div>
+            <div class="controls">
+                <h3>Dashboard Controls</h3>
+                <div class="toggle-container">
+                    <label class="toggle-label">Original Feed</label>
+                    <label class="switch">
+                        <input type="checkbox" id="toggle-raw" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="toggle-container">
+                    <label class="toggle-label">Processed Feed</label>
+                    <label class="switch">
+                        <input type="checkbox" id="toggle-seg" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="toggle-container">
+                    <label class="toggle-label">Topics Telemetry</label>
+                    <label class="switch">
+                        <input type="checkbox" id="toggle-topics" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="toggle-container">
+                    <label class="toggle-label">Services List</label>
+                    <label class="switch">
+                        <input type="checkbox" id="toggle-services" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <button id="reset-layout" class="btn-primary">Reset Layout</button>
+            </div>
+            <div class="system-status">
+                <span class="status-indicator online"></span>
+                <span>System Online</span>
+            </div>
+        </nav>
+
+        <!-- Main Workspace -->
+        <main class="workspace">
+            <header class="top-bar">
+                <h1>KITTI Semantic Segmentation Demo</h1>
+                <div class="header-tags">
+                    <span class="tag bg-blue">ROS2 Humble</span>
+                    <span class="tag bg-green">DeepLabV3</span>
+                    <span class="tag bg-purple">Real-time</span>
+                </div>
+            </header>
+            
+            <div class="grid-container">
+                <div class="grid-stack"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Data Modal -->
+    <div id="data-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Live Data</h3>
+                <span class="close-btn">&times;</span>
+            </div>
+            <div class="modal-body">
+                <pre id="modal-data">Waiting for data...</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Templates for GridStack items -->
+    <template id="template-raw">
+        <div class="widget-content stream-widget">
+            <div class="widget-header">
+                <h3>Original Camera Feed</h3>
+                <span class="live-badge">LIVE</span>
+            </div>
+            <div class="video-container">
+                <img src="/stream/raw" alt="Raw Video Stream" onerror="this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='">
+            </div>
+        </div>
+    </template>
+    
+    <template id="template-seg">
+        <div class="widget-content stream-widget">
+            <div class="widget-header">
+                <h3>Semantic Segmentation</h3>
+                <span class="live-badge">LIVE</span>
+            </div>
+            <div class="video-container">
+                <img src="/stream/seg" alt="Processed Video Stream" onerror="this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='">
+            </div>
+        </div>
+    </template>
+
+    <template id="template-topics">
+        <div class="widget-content data-widget">
+            <div class="widget-header">
+                <h3>Active Topics</h3>
+            </div>
+            <div class="table-container">
+                <table id="topics-table">
+                    <thead>
+                        <tr>
+                            <th>Topic Name</th>
+                            <th>Message Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="2" class="loading">Discovering topics...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </template>
+
+    <template id="template-services">
+        <div class="widget-content data-widget">
+            <div class="widget-header">
+                <h3>Active Services</h3>
+            </div>
+            <div class="table-container">
+                <table id="services-table">
+                    <thead>
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Service Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="2" class="loading">Discovering services...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </template>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gridstack@7.2.3/dist/gridstack-all.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
